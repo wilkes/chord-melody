@@ -9,14 +9,18 @@
   (= (count xs) (count (set xs))))
 
 (s/def ::note (set notes))
-(s/def ::chord (s/and (s/tuple ::note ::note ::note ::note)
-                      no-duplicates?))
+
+(s/def ::chord
+  (s/and (s/tuple ::note ::note ::note ::note)
+         no-duplicates?))
+
 (s/def ::closed ::chord)
 (s/def ::drop-2 ::chord)
 (s/def ::drop-3 ::chord)
 
-(s/def ::chord-melody-args (s/and (s/cat :chord ::chord :melody ::note)
-                                  #((-> % :chord set) (-> % :melody))))
+(s/def ::chord-melody-args
+  (s/and (s/cat :chord ::chord :melody ::note)
+         #((-> % :chord set) (-> % :melody))))
 
 (defn inversions [chord]
   (reduce (fn [invs _]
@@ -28,11 +32,10 @@
 (s/fdef inversions
         :args (s/cat :chord ::chord)
         :ret (s/tuple ::chord ::chord ::chord ::chord)
-        :fn (fn [{:keys [args ret]}]
-              (and (= (-> args :chord) (-> ret first))
-                   (= (count (-> args :chord))
-                      (count ret)
-                      (count (into #{} ret))))))
+        :fn #(and (= (-> % :args :chord) (-> % :ret first))
+                  (= (-> % :args :chord count)
+                     (-> % :ret count)
+                     (-> % :ret set count))))
 
 (defn drop-2 [[bass tenor alto suprano]]
   [alto bass tenor suprano])
