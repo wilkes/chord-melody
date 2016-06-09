@@ -70,6 +70,8 @@
                      (-> % :ret set))))
 
 (defn chord-melody-voicings [chord melody]
+  (when-not (s/valid? ::chord-melody-args [chord melody])
+    (throw (RuntimeException. (with-out-str (s/explain ::chord-melody-args [chord melody])))))
   (let [inv (inversion chord melody)]
     {::closed inv
      ::drop-2 (drop-2 inv)
