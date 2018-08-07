@@ -1,7 +1,7 @@
 (ns chord-melody.core
-  (:require [clojure.spec :as s]
-            [clojure.spec.gen :as gen]
-            [clojure.spec.test :as test]))
+  (:require [clojure.spec.alpha :as s]
+            [clojure.spec.gen.alpha :as gen]
+            [clojure.spec.test.alpha :as stest]))
 
 (def notes [:A :Bb :B :C :Db :D :Eb :E :F :Gb :G :Ab])
 
@@ -84,3 +84,17 @@
                 (-> % :ret ::closed last)
                 (-> % :ret ::drop-2 last)
                 (-> % :ret ::drop-3 last)))
+
+(comment
+  (chord-melody-voicings [:C :E :G :B] :G)
+  (inversions [:C :E :G :Bb])
+
+  (s/exercise ::note)
+  (s/exercise ::chord)
+  (s/exercise ::chord-melody-args)
+
+  (-> (stest/enumerate-namespace 'chord-melody.core)
+      stest/check
+      stest/summarize-results)
+
+  :end)
